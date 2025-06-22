@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>FiloKids</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Comic Sans MS', cursive, sans-serif;
+      background-color: #f0f0f0;
+    }
+    .main {
+      position: relative;
+      width: 100%;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    .background-image {
+      background-image: url("imagesfondo_interactivo.png");
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+      width: 100%;
+      height: 1000px;
+    }
+    .floating-button {
+      position: absolute;
+      background: none;
+      border: none;
+      cursor: pointer;
+      z-index: 2;
+    }
+    .historia { top: 20px; left: 33%; width: 33%; height: 80px; }
+    .verdad { top: 675px; left: 10%; width: 20%; height: 100px; }
+    .amistad { top: 675px; left: 40%; width: 20%; height: 100px; }
+    .justo { top: 675px; left: 70%; width: 20%; height: 100px; }
+
+    .nina { top: 380px; left: 400px; width: 80px; height: 160px; }
+    .perro { top: 410px; left: 200px; width: 80px; height: 130px; }
+    .robot { top: 410px; left: 600px; width: 80px; height: 160px; }
+
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 999;
+      left: 0; top: 0;
+      width: 100%; height: 100%;
+      overflow: auto;
+      background-color: rgba(0,0,0,0.6);
+    }
+    .modal-content {
+      background-color: #fff;
+      margin: 10% auto;
+      padding: 20px;
+      border-radius: 10px;
+      width: 80%;
+      max-width: 600px;
+      text-align: center;
+    }
+    .close {
+      color: #aaa;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .close:hover { color: black; }
+    audio { width: 100%; margin-top: 10px; }
+    .modal-content img {
+      width: 100%;
+      max-width: 300px;
+      margin: 15px auto;
+      cursor: pointer;
+    }
+    .opcion {
+      background-color: #e0e0e0;
+      margin: 10px auto;
+      padding: 10px;
+      width: 80%;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background-color 0.3s ease;
+    }
+    .opcion:hover {
+      background-color: #c0c0c0;
+    }
+  </style>
+</head>
+<body>
+
+<main class="main">
+  <div class="background-image"></div>
+
+  <!-- Botones principales -->
+  <button class="floating-button historia" onclick="openModal('historia')"></button>
+  <button class="floating-button verdad" onclick="openModal('verdad')"></button>
+  <button class="floating-button amistad" onclick="openModal('amistad')"></button>
+  <button class="floating-button justo" onclick="openModal('justo')"></button>
+
+  <!-- Personajes con sonido por hover -->
+  <button class="floating-button nina" onmouseenter="playHoverSound('nina')" onmouseleave="stopHoverSound('nina')"></button>
+  <button class="floating-button perro" onmouseenter="playHoverSound('perro')" onmouseleave="stopHoverSound('perro')"></button>
+  <button class="floating-button robot" onmouseenter="playHoverSound('robot')" onmouseleave="stopHoverSound('robot')"></button>
+
+  <!-- Agregado al final del <main> justo después de los botones de personajes -->
+  <div style="position: absolute; bottom: -30px; left: 50%; transform: translateX(-50%); width: 60%; max-width: 450px; background-color: #ffffffcc; border: 2px solid #ff69b4; border-radius: 15px; padding: 15px; box-shadow: 2px 2px 8px rgba(0,0,0,0.2);">
+    <h3 style="text-align: center; margin-top: 0; color: #ff1493;">¡Cuéntanos qué opinas!</h3>
+    <div id="comentarios" style="max-height: 150px; overflow-y: auto; background: #f9f9f9; border-radius: 10px; padding: 10px; margin-bottom: 10px;">
+      <!-- Comentarios aparecerán aquí -->
+    </div>
+    <input type="text" id="nuevoComentario" placeholder="Escribe tu comentario aquí..." style="width: 95%; padding: 10px; border-radius: 10px; border: 1px solid #ccc; margin-bottom: 10px;" />
+    <button onclick="agregarComentario()" style="width: 100%; background-color: #ff69b4; color: white; padding: 10px; border: none; border-radius: 10px; font-weight: bold; cursor: pointer;">Enviar</button>
+  </div>
+</main>
+
+<!-- Modal Historia -->
+<div id="historia" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal('historia')">&times;</span>
+    <h2>Nuestra Historia</h2>
+    <img src="illustrations/filokids_story.png" alt="Imagen historia">
+    <p>FiloKids nació de la creación de un nuevo público estratégico basado en la detección de que los niños tienen la costumbre innata de filosofar pero, al mismo tiempo, con la incapacidad de responder a sus dudas. De esta forma se propuso llenar ese vacío educativo a través de esta página que transmite lectura, pensamiento y diálogo mutuo sobre las temáticas existentes.</p>
+    <audio controls>
+      <source src="audio/filokids_story.mp3" type="audio/mpeg" />
+    </audio>
+  </div>
+</div>
+
+<!-- Modal Verdad -->
+<div id="verdad" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal('verdad')">&times;</span>
+    <h2>La Verdad</h2>
+    <img src="illustrations/truth_story.png" alt="Imagen verdad" onclick="openModal('juegoVerdad')">
+    <p>Exploramos la importancia de decir la verdad y fomentar la buena relación desde el hogar. <a href="https://youtu.be/23NK4JaAx68" target="_blank" rel="noopener noreferrer">DECIR LA VERDAD</a>.</p>
+    <audio controls>
+      <source src="audio/truth_story.mp3" type="audio/mpeg" />
+    </audio>
+  </div>
+</div>
+
+<!-- Modal Amistad -->
+<div id="amistad" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal('amistad')">&times;</span>
+    <h2>La Amistad</h2>
+    <img src="illustrations/friendship_story.png" alt="Imagen amistad" onclick="openModal('juegoAmistad')">
+    <p>Conocemos el valor de los amigos y cómo cuidarlos.<a href="https://youtu.be/JjOfqslQvgg?si=6YxFNes-NyXW17Fs" target="_blank" rel="noopener noreferrer">AMISTAD</a>.</p>
+    <audio controls>
+      <source src="audio/friendship_story.mp3" type="audio/mpeg" />
+    </audio>
+  </div>
+</div>
+
+<!-- Modal Justo -->
+<div id="justo" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal('justo')">&times;</span>
+    <h2>Lo Justo</h2>
+    <img src="illustrations/fairness_story.png" alt="Imagen justo" onclick="openModal('juegoJusto')">
+    <p>Reflexionamos sobre qué significa ser justo en distintas situaciones.<a href="https://youtu.be/pyKnki1xARI?si=5WWzyK_DvTfK2xFQ" target="_blank" rel="noopener noreferrer">LA JUSTICIA</a>.</p>
+    <audio controls>
+      <source src="audio/fairness_story.mp3" type="audio/mpeg" />
+    </audio>
+  </div>
+</div>
+
+<!-- Minijuegos -->
+<div id="juegoVerdad" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal('juegoVerdad')">&times;</span>
+    <h2>Minijuego La Verdad</h2>
+    <img id="imgVerdad" src="illustrations/verdad_inicio.png" alt="Escena La Verdad" />
+    <p id="textoVerdad">Lucas encuentra un juguete perdido en el parque. Nadie lo ve, pero él sabe que no es suyo...</p>
+    <div class="opcion" onclick="decisionVerdad('devolver')">Llevarlo al puesto de objetos perdidos</div>
+    <div class="opcion" onclick="decisionVerdad('guardar')">Guardarlo en su mochila</div>
+  </div>
+</div>
+
+<div id="juegoAmistad" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal('juegoAmistad')">&times;</span>
+    <h2>Minijuego La Amistad</h2>
+    <img id="imgAmistad" src="illustrations/amistad_inicio.png" alt="Escena la Amistad" />
+    <p id="textoAmistad">Emma ve a su compañero de clase, Pablo, pero está solo en el recreo y triste. ¿Qué debería hacer?</p>
+    <div class="opcion" onclick="decisionAmistad('hablar')">Ir a hablar con él</div>
+    <div class="opcion" onclick="decisionAmistad('ignorar')">Dejarlo solo</div>
+  </div>
+</div>
+
+<div id="juegoJusto" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal('juegoJusto')">&times;</span>
+    <h2>Minijuego Lo Justo</h2>
+    <img id="imgJusto" src="illustrations/justo_inicio.png" alt="Escena lo Justo" />
+    <p id="textoJusto">Durante un juego, Camila ve que su equipo ganó con trampa, ¿Qué hicieras en su caso?</p>
+    <div class="opcion" onclick="decisionJusto('decir')">Contar lo que vio</div>
+    <div class="opcion" onclick="decisionJusto('callar')">Quedarse callada</div>
+  </div>
+</div>
+
+<!-- JavaScript -->
+<script>
+  const clickSound = new Audio("audio/click.mp3");
+  clickSound.volume = 0.2; // volumen bajo para click
+  const closeSound = new Audio("audio/close.mp3");
+  closeSound.volume = 0.2; // volumen bajo para close
+
+  const personajes = {
+    nina: new Audio("audio/nina.mp3"),
+    perro: new Audio("audio/perro.mp3"),
+    robot: new Audio("audio/robot.mp3")
+  };
+
+  // ajustar volumen bajo para sonidos personajes
+  Object.values(personajes).forEach(audio => {
+    audio.volume = 0.2;
+  });
+
+  function openModal(id) {
+    const modal = document.getElementById(id);
+    modal.style.display = "block";
+    clickSound.currentTime = 0;
+    clickSound.play();
+    const audio = modal.querySelector("audio");
+    if (audio) {
+      audio.volume = 0.2; // volumen bajo para audios dentro del modal
+      audio.currentTime = 0;
+      audio.play();
+    }
+  }
+
+  function closeModal(id) {
+    const modal = document.getElementById(id);
+    modal.style.display = "none";
+    closeSound.currentTime = 0;
+    closeSound.play();
+    const audio = modal.querySelector("audio");
+    if (audio) {
+      audio.pause();
+      audio.currentTime = 0;
+    }
+  }
+
+  function playHoverSound(personaje) {
+    if (personajes[personaje]) {
+      personajes[personaje].volume = 0.2; // volumen bajo
+      personajes[personaje].currentTime = 0;
+      personajes[personaje].loop = true;
+      personajes[personaje].play();
+    }
+  }
+
+  function stopHoverSound(personaje) {
+    if (personajes[personaje]) {
+      personajes[personaje].pause();
+      personajes[personaje].currentTime = 0;
+      personajes[personaje].loop = false;
+    }
+  }
+
+  window.onclick = function(event) {
+    document.querySelectorAll('.modal').forEach(modal => {
+      if (event.target === modal) {
+        modal.style.display = "none";
+        closeSound.currentTime = 0;
+        closeSound.play();
+        const audio = modal.querySelector("audio");
+        if (audio) {
+          audio.pause();
+          audio.currentTime = 0;
+        }
+      }
+    });
+  };
+
+  function decisionVerdad(opcion) {
+    const texto = document.getElementById("textoVerdad");
+    const imagen = document.getElementById("imgVerdad");
+    if (opcion === 'devolver') {
+      texto.textContent = "Lucas lleva el juguete al puesto para que sea entregado a su respectivo dueño. ¡Hizo lo correcto!";
+      imagen.src = "illustrations/verdad_devolver.png";
+    } else {
+      texto.textContent = "Lucas decide guardar el juguete en su mochila pero siente preocupación. No fue la mejor decisión.";
+      imagen.src = "illustrations/verdad_guardar.png";
+    }
+  }
+
+  function decisionAmistad(opcion) {
+    const texto = document.getElementById("textoAmistad");
+    const imagen = document.getElementById("imgAmistad");
+    if (opcion === 'hablar') {
+      texto.textContent = "Pablo le comparte de su lunch a Emma. La amistad se fortalece.";
+      imagen.src = "illustrations/amistad_hablar.png";
+    } else {
+      texto.textContent = "Emma decide ignorar la situación de Pablo y simplemente continúa con día a día. Jamás sucedió esa amistad.";
+      imagen.src = "illustrations/amistad_ignorar.png";
+    }
+  }
+
+  function decisionJusto(opcion) {
+    const texto = document.getElementById("textoJusto");
+    const imagen = document.getElementById("imgJusto");
+    if (opcion === 'decir') {
+      texto.textContent = "Camila cuenta la verdad y ayuda a que el juego sea justo.";
+      imagen.src = "illustrations/justo_decir.png";
+    } else {
+      texto.textContent = "Camila decide no hablar y la injusticia continúa con mas sets de rondas.";
+      imagen.src = "illustrations/justo_callar.png";
+    }
+  }
+
+  // Función para agregar comentarios en el chat
+  function agregarComentario() {
+    const contenedor = document.getElementById("comentarios");
+    const input = document.getElementById("nuevoComentario");
+    const texto = input.value.trim();
+    if (texto !== "") {
+      const nuevo = document.createElement("div");
+      nuevo.textContent = "💬 " + texto;
+      nuevo.style.marginBottom = "5px";
+      nuevo.style.background = "#fff";
+      nuevo.style.padding = "6px 10px";
+      nuevo.style.borderRadius = "10px";
+      nuevo.style.border = "1px solid #ddd";
+      contenedor.appendChild(nuevo);
+      input.value = "";
+    }
+  }
+</script>
+
+</body>
+</html>
+
+
